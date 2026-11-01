@@ -1,61 +1,31 @@
-import React from 'react';
-import { ArrowRight, ChevronDown } from 'lucide-react';
-import heroVideo from '../Video/hf_20260121_010249_131d7240-661a-4397-8657-14e2b6132def.mp4';
-
-interface Props {
-  onOpenConfigurator: () => void;
-}
-
+import React, { useEffect, useRef, useState } from 'react';
+import { ArrowDown, ArrowUpRight, Check, MapPin, Pause, Play } from 'lucide-react';
+interface Props { onOpenConfigurator: () => void; }
 export const Hero: React.FC<Props> = ({ onOpenConfigurator }) => {
+  const video = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const base = import.meta.env.BASE_URL;
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sync = () => { if (query.matches) video.current?.pause(); else video.current?.play().catch(() => setPlaying(false)); };
+    sync(); query.addEventListener('change', sync);
+    return () => query.removeEventListener('change', sync);
+  }, []);
+  const toggleVideo = () => { if (playing) video.current?.pause(); else video.current?.play().catch(() => setPlaying(false)); };
   return (
-    <section id="home" className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-      {/* Background Video */}
-      <div className="absolute inset-0 z-0">
-        <video
-          src={heroVideo}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="w-full h-full object-cover"
-        />
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/70 to-transparent"></div>
+    <section className="hero site-wrap" aria-labelledby="hero-title">
+      <div className="hero-copy">
+        <p className="eyebrow"><span /> KOUPELNY NA KLÍČ · LITOMYŠL</p>
+        <h1 id="hero-title">Koupelna,<br />ve které je<br /><span>vám dobře.</span></h1>
+        <p className="hero-description">Od prvního nápadu přes 3D návrh až po hotovou koupelnu. Proměníme vaše představy v prostor pro každý den.</p>
+        <div className="hero-actions"><button className="button button-red" onClick={onOpenConfigurator}>Poptat svou koupelnu <ArrowUpRight size={20} aria-hidden="true" /></button><a className="text-link" href="#home/work">Prohlédnout realizace <ArrowDown size={17} aria-hidden="true" /></a></div>
+        <div className="hero-note"><Check size={16} aria-hidden="true" /><span>Nezávazně. Probereme možnosti i váš rozpočet.</span></div>
+        <div className="hero-foot"><span className="hero-foot-number">2006</span><span>Od návrhů koupelen<br />k hotovým domovům.</span></div>
       </div>
-
-      <div className="container mx-auto px-4 md:px-8 relative z-10 pt-10">
-        <div className="max-w-2xl text-white">
-          <div className="inline-block px-3 py-1 bg-red-600/20 border border-red-500/50 rounded-full text-red-300 text-xs font-bold uppercase tracking-wider mb-6 backdrop-blur-md">
-            Litomyšl a okolí
-          </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-            Realizujeme moderní koupelny.<br />
-            Stavíme a prodáváme rodinné domy.
-          </h1>
-          <p className="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed max-w-lg">
-            Naše společnost vznikla v roce 2006 na základě letitých zkušeností ve stavebnictví. Navrhneme, vizualizujeme, zaměříme a kompletně zrealizujeme koupelnu. Montujeme vodu, kanalizaci, plyn a topení ve všech druzích objektů.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button
-              onClick={onOpenConfigurator}
-              className="group bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold transition-all shadow-lg shadow-red-600/30 flex items-center justify-center gap-2"
-            >
-              Nezávazný návrh koupelny
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <a
-              href="#portfolio"
-              className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white px-8 py-4 rounded-full font-bold transition-all flex items-center justify-center"
-            >
-              Podívat se na reference
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 animate-bounce hidden md:block">
-        <ChevronDown className="w-8 h-8" />
+      <div className="hero-media">
+        <video ref={video} src={`${base}media/flach-atmosphere.mp4`} poster={`${base}media/flach-bathroom-poster.webp`} muted loop playsInline preload="metadata" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} aria-label="Atmosféra koupelen a bydlení FLACH" />
+        <div className="hero-media-top"><span><MapPin size={14} aria-hidden="true" /> Litomyšl a okolí</span><button className="video-toggle" onClick={toggleVideo} aria-label={playing ? 'Pozastavit video' : 'Přehrát video'}>{playing ? <Pause size={17} /> : <Play size={17} />}</button></div>
+        <div className="hero-media-bottom"><div><span className="media-caption">PROSTOR PRO VAŠE PŘEDSTAVY</span><p>Promyšlené od prvního detailu.</p><span className="media-note">Vizuální inspirace</span></div><a href="#bathrooms" aria-label="Více o koupelnách na klíč"><ArrowUpRight size={25} aria-hidden="true" /></a></div>
       </div>
     </section>
   );

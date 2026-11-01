@@ -1,62 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { REFERENCES } from '../constants';
-import { Reference } from '../types';
-import { ArrowUpRight } from 'lucide-react';
-
-export const Portfolio: React.FC = () => {
-  return (
-    <section id="portfolio" className="py-24 bg-slate-50">
-      <div className="container mx-auto px-4 md:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
-          <div className="max-w-2xl">
-            <h2 className="text-sm font-bold text-red-600 uppercase tracking-widest mb-2">Reference</h2>
-            <h3 className="text-4xl font-bold text-slate-900 mb-3">Reálné projekty z flach.cz</h3>
-            <p className="text-slate-600">
-              Převzali jsme odkazy i fotky z oficiální sekce realizací na flach.cz. Kliknutím se dostanete na detailní galerii daného roku přímo na jejich webu.
-            </p>
-          </div>
-          
-          <a 
-            href="https://www.flach.cz/realizace-koupelen" 
-            target="_blank" 
-            rel="noreferrer" 
-            className="inline-flex items-center gap-2 text-sm font-bold text-red-700 border-b-2 border-red-200 pb-1 hover:text-red-800 hover:border-red-600 transition-colors"
-          >
-            Celá galerie na flach.cz <ArrowUpRight className="w-4 h-4" />
-          </a>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {REFERENCES.map((reference: Reference) => (
-            <a
-              key={reference.id}
-              href={reference.link}
-              target="_blank"
-              rel="noreferrer"
-              className="group relative overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-xl transition-all"
-            >
-              <div className="aspect-[4/3] bg-slate-200">
-                <img 
-                  src={reference.imageUrl} 
-                  alt={reference.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-              <div className="p-6 flex flex-col gap-2">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-red-600">
-                  <span className="inline-flex items-center justify-center rounded-full bg-red-50 text-red-700 px-3 py-1">{reference.year}</span>
-                  <span>Reference z flach.cz</span>
-                </div>
-                <h4 className="text-xl font-bold text-slate-900">{reference.title}</h4>
-                <p className="text-slate-600 text-sm leading-relaxed">
-                  {reference.description}
-                </p>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
+import { ArrowUpRight, ImageOff } from 'lucide-react';
+function ReferenceImage({ src, alt }: { src: string; alt: string }) {
+  const [failed,setFailed] = useState(false);
+  return failed ? <div className="reference-fallback"><ImageOff aria-hidden="true" /><span>Fotografie v původní galerii</span></div> : <img src={src} alt={alt} loading="lazy" width="420" height="130" onError={() => setFailed(true)} />;
+}
+export const Portfolio: React.FC = () => <section id="work" className="work-section section-space" aria-labelledby="work-title"><div className="site-wrap"><div className="section-heading"><div><p className="eyebrow">ZA NÁMI JSOU KONKRÉTNÍ KOUPELNY</p><h2 id="work-title">Každý prostor.<br />Jiný příběh.</h2></div><div className="section-aside"><p>Nahlédněte do archivu našich realizací.<br />Od prvních nápadů k hotovým koupelnám.</p><a className="text-link" href="https://www.flach.cz/realizace-koupelen" target="_blank" rel="noreferrer">Všechny realizace na flach.cz <ArrowUpRight size={18} aria-hidden="true" /><span className="sr-only"> (nové okno)</span></a></div></div><div className="reference-grid">{[REFERENCES[0],REFERENCES[1],REFERENCES[4]].map((reference,i) => <a key={reference.id} className="reference-card" href={reference.link} target="_blank" rel="noreferrer"><div className="reference-image"><ReferenceImage src={reference.imageUrl} alt={`Ukázka realizace koupelny FLACH z roku ${reference.year}`} /><span className="reference-year">{reference.year}</span></div><div className="reference-info"><div><span>REALIZACE / 0{i+1}</span><h3>Koupelny {reference.year}</h3></div><ArrowUpRight size={22} aria-hidden="true" /></div><span className="reference-action">Otevřít původní fotogalerii<span className="sr-only"> v novém okně</span></span></a>)}</div><p className="archive-note">Fotografie z archivu FLACH. Galerie zachycují realizace v uvedených letech.</p></div></section>;

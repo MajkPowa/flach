@@ -28,7 +28,7 @@ export const BathroomsPage: React.FC<Props> = ({ onOpenConfigurator }) => {
               </p>
               <ul className="space-y-4 mb-8">
                 {[
-                  '3D vizualizace zdarma k realizaci',
+                  '3D návrh a vizualizace koupelny',
                   'Zaměření koupelny a dispoziční návrhy',
                   'Vlastní tým zkušených řemeslníků',
                   'Montáže vody, kanalizace, plynu a topení',
